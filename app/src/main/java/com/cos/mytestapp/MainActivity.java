@@ -4,11 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.cos.mytestapp.adapter.ViewPagerAdapter;
 import com.cos.mytestapp.databinding.ActivityMainBinding;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -26,7 +32,17 @@ public class MainActivity extends AppCompatActivity  {
         _binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(_binding.getRoot());
 
+        ViewPagerSetting();
+        SlidingDrawerSetting();
+        //SwipeSetting();
 
+    }
+
+
+    /**
+     * TODO: icon size와 상관없이 topline을 고정시킬 수 있도록 수정해야한다.
+     */
+    private void SlidingDrawerSetting(){
         _binding.slidingDrawer.setOnDrawerOpenListener(() -> {
             Log.d(TAG, "onCreate: drawer open ");
             _isOpenSlidingDrawer = true;
@@ -37,7 +53,13 @@ public class MainActivity extends AppCompatActivity  {
             _isOpenSlidingDrawer = false;
         });
 
-        _binding.llMain.setOnTouchListener(new OnSwipeTouchListener(mthis){
+    }
+
+    /**
+     * TODO : ViewPager 추가한 뒤로 swipe 처리 다시 확인필요
+     */
+    private void SwipeSetting(){
+        _binding.viewPager.setOnTouchListener(new OnSwipeTouchListener(mthis){
             @Override
             public void onSwipeBottom() {
                 //위 -> 아래
@@ -72,8 +94,19 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    private void ViewPagerSetting(){
+
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        _binding.viewPager.setAdapter(viewPagerAdapter);
+        new TabLayoutMediator(_binding.tabLayout, _binding.viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull @NotNull TabLayout.Tab tab, int position) {
+                tab.setText("Tab"+(position+1));
+            }
+        }).attach();
+
+    }
+
 
 }
-
-
 
